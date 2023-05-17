@@ -93,7 +93,7 @@ async function genPrompts(flags) {
     },
     {
       type: 'fuzzypath',
-      name: 'imageDir',
+      name: 'imagesDir',
       excludePath: (nodePath) => {
         for (let i = 0; i < fuzzyExcludePaths.length; i++) {
           if (nodePath.startsWith(fuzzyExcludePaths[i])) return true;
