@@ -18,19 +18,20 @@ const licenseTypes = {
   Unlicense: 'unlicense',
 };
 
-const badgeChoices = {
+const fuzzyExcludePaths = [
+  'node_modules',
+  '.git',
+  'package.json',
+  'package-lock.json',
+  'README',
+  '.env',
+];
+
+const noneDefaultBadges = {
   'NPM Package Version': (projectName, userName) =>
     `![npm](https://img.shields.io/npm/v/${projectName})`,
   'Github Workflow Status': (projectName, userName) =>
     `[![build](https://github.com/${userName}/${projectName}/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/${userName}/${projectName}/actions/workflows/pages/pages-build-deployment)`,
-  Languages: (projectName, userName) =>
-    `![GitHub language count](https://img.shields.io/github/languages/count/${userName}/${projectName})`,
-  'Top Language': (projectName, userName) =>
-    `![GitHub top language](https://img.shields.io/github/languages/top/${userName}/${projectName})`,
-  'Github Forks': (projectName, userName) =>
-    `![GitHub forks](https://img.shields.io/github/forks/${userName}/${projectName}?style=social)`,
-  'Github Last Commit': (projectName, userName) =>
-    `![GitHub last commit](https://img.shields.io/github/last-commit/${userName}/${projectName})`,
 };
 
 const defaultBadges = {
@@ -44,14 +45,7 @@ const defaultBadges = {
     `![GitHub last commit](https://img.shields.io/github/last-commit/${userName}/${projectName})`,
 };
 
-const fuzzyExcludePaths = [
-  'node_modules',
-  '.git',
-  'package.json',
-  'package-lock.json',
-  'README',
-  '.env',
-];
+const badgeChoices = { ...noneDefaultBadges, ...defaultBadges };
 
 async function grabUserData(userName) {
   try {

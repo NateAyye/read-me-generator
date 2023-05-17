@@ -3,27 +3,28 @@ const { badgeChoices } = require('./data');
 const fs = require('fs');
 
 // If there is no license, return an empty string
-const renderLicenseBadge = (license, projectName, userName) =>
-  !license
-    ? ''
-    : `![GitHub](https://img.shields.io/github/license/${userName}/${projectName})`;
-
+function renderLicenseBadge(license, userName, projectName) {
+  if (!license) return '';
+  return `![GitHub](https://img.shields.io/github/license/${userName}/${projectName})`;
+}
 // TODO: Create a function that returns the license link
 // If there is no license, return an empty string
-const renderLicenseLink = (license, projectName, userName) =>
-  !license
-    ? ''
-    : ` [${license} License](https://github.com/${userName}/${projectName}/blob/main/LICENSE)`;
-
+function renderLicenseLink(license, projectName, userName) {
+  if (!license) return '';
+  return `[${license} License](https://github.com/${userName}/${projectName}/blob/main/LICENSE)`;
+}
 // TODO: Create a function that returns the license section of README
 // If there is no license, return an empty string
-const renderLicenseSection = (license, projectName, userName) =>
-  !license
-    ? ''
-    : `## License
-Refer to the ` +
-      `${renderLicenseLink(license, projectName, userName)}` +
-      ` file within the root of the repository`;
+function renderLicenseSection(license, projectName, userName) {
+  if (!license) return '';
+  return `## License
+    Refer to the ${renderLicenseLink(
+      license,
+      projectName,
+      userName,
+    )}file within the root of the repository;
+    `;
+}
 
 const generateBadges = (badges, projectName, userName) =>
   badges.map((badge) => badgeChoices[badge](projectName, userName)).join('\n');
@@ -42,9 +43,9 @@ async function renderUsageSection(imageDir, configData) {
 
       return `${
         configData?.descriptions ? configData.descriptions[i] : imgName
-      }\n\n![${img.replace(path.parse(img).ext, '')}](./${imageDir
-        .split('\\')
-        .join('/')}/${img})\n`;
+      }\n\n![${
+        configData?.descriptions ? configData.descriptions[i] : imgName
+      }](./${imageDir.split('\\').join('/')}/${img})\n`;
     })
     .join('\n');
 }

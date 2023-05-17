@@ -24,7 +24,7 @@ async function writeToFile(fileName, data) {
 
 // TODO: Create a function to initialize app
 async function init() {
-  // flags.clear && clear();
+  flags.clear && clear();
 
   flags.help && showHelp();
 

@@ -1,5 +1,6 @@
 node_modules
 package-lock.json
 .env
+rdmerc.js
 rdmerc.json
 assets
