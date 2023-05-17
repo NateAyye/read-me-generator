@@ -4,11 +4,11 @@ const genPrompts = require('./utils/prompts');
 const fs = require('fs');
 const generateMarkdown = require('./utils/generateMarkdown');
 const buildLicenseFile = require('./utils/buildLicenseFile');
-const path = require('path');
 const cli = require('./utils/cli');
 const { alert } = require('./utils/alerts');
 const { clear } = require('console');
-const { showHelp, input, flags } = cli;
+const { defaultBadges } = require('./utils/data');
+const { showHelp, showVersion, input, flags } = cli;
 
 // TODO: Create a function to write README file
 async function writeToFile(fileName, data) {
@@ -24,12 +24,9 @@ async function writeToFile(fileName, data) {
 
 // TODO: Create a function to initialize app
 async function init() {
-  console.log(flags, input);
-
-  flags.clear && clear();
+  // flags.clear && clear();
 
   flags.help && showHelp();
-  // console.log(require(path.join(process.cwd(), 'package.json')));
 
   if (input.includes('gen')) {
     const {
@@ -37,6 +34,7 @@ async function init() {
       pkgData,
       authorName,
       configData,
+      badges,
       projectName,
       description,
       userName,
@@ -67,29 +65,21 @@ async function init() {
           });
         }
       }
-      // Needs :
-      //  - formated Title
-      //  - unformated Title
-      //  - github UserName
-      //  - list of badges user wants
-      //  - license type
-      //  - description
-      //  - imagesDir
-      //  - if they want contributions
       await writeToFile('README.md', {
         formatedTitle: title,
         title: answers?.projectName || projectName,
-        userName,
-        badges: answers.badges,
+        userName: answers?.userName || userName,
+        badges: answers?.badges || badges ? Object.keys(defaultBadges) : [],
         license,
         description,
-        imagesDir: answers?.imagesDir || configData?.imagesDir,
+        configData,
+        imagesDir: configData?.imagesDir || answers?.imagesDir,
         contributions: areContributions,
       });
     });
   }
-  flags.version &&
-    console.log(`v${require(path.join(__dirname, 'package.json')).version}`);
+
+  flags.version && showVersion();
 }
 
 // Function call to initialize app

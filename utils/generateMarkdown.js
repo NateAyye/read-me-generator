@@ -1,93 +1,65 @@
-// TODO: Create a function that returns a license badge based on which license is passed in
-
 const path = require('path');
 const { badgeChoices } = require('./data');
 const fs = require('fs');
 
 // If there is no license, return an empty string
-function renderLicenseBadge(license, projectName, userName) {
-  return !license
+const renderLicenseBadge = (license, projectName, userName) =>
+  !license
     ? ''
-    : `![GitHub](https://img.shields.io/github/license/${userName}/${projectName}?label=License)`;
-}
+    : `![GitHub](https://img.shields.io/github/license/${userName}/${projectName})`;
 
 // TODO: Create a function that returns the license link
 // If there is no license, return an empty string
-function renderLicenseLink(license, projectName, userName) {
-  return !license
+const renderLicenseLink = (license, projectName, userName) =>
+  !license
     ? ''
     : ` [${license} License](https://github.com/${userName}/${projectName}/blob/main/LICENSE)`;
-}
 
 // TODO: Create a function that returns the license section of README
 // If there is no license, return an empty string
-function renderLicenseSection(license, projectName, userName) {
-  return !license
+const renderLicenseSection = (license, projectName, userName) =>
+  !license
     ? ''
     : `## License
-  Refer to the ${renderLicenseLink(
-    license,
-    projectName,
-    userName,
-  )} file within the root of the repository`;
-}
+Refer to the ` +
+      `${renderLicenseLink(license, projectName, userName)}` +
+      ` file within the root of the repository`;
 
-function generateBadges(badges, projectName, userName) {
-  return badges
-    .map((badge) => badgeChoices[badge](projectName, userName))
+const generateBadges = (badges, projectName, userName) =>
+  badges.map((badge) => badgeChoices[badge](projectName, userName)).join('\n');
+
+async function renderUsageSection(imageDir, configData) {
+  return (
+    await fs.promises.readdir(path.join(process.cwd(), imageDir), 'utf-8')
+  )
+    .filter((img) => img.startsWith('step'))
+    .map((img, i, arr) => {
+      const imgName = path
+        .parse(img)
+        .name?.split('-')
+        ?.map((val) => val.slice(0, 1).toUpperCase() + val.slice(1))
+        ?.join(' ');
+
+      return `${
+        configData?.descriptions ? configData.descriptions[i] : imgName
+      }\n\n![${img.replace(path.parse(img).ext, '')}](./${imageDir
+        .split('\\')
+        .join('/')}/${img})\n`;
+    })
     .join('\n');
 }
 
-async function renderUsageSection(imageDir) {
-  try {
-    const config = await fs.promises.readFile(
-      path.join(process.cwd(), 'rdmerc.json'),
-    );
-    const parsedConfig = JSON.parse(config);
-
-    return (
-      await fs.promises.readdir(path.join(process.cwd(), imageDir), 'utf-8')
-    )
-      .filter((img) => img.startsWith('step'))
-      .map((img, i, arr) => {
-        return `${'1. '}${
-          parsedConfig?.descriptions
-            ? parsedConfig.descriptions[i]
-            : path
-                .parse(img)
-                .name.split('-')
-                .map((val) => val.slice(0, 1).toUpperCase() + val.slice(1))
-                .join(' ')
-        }\n![${img.replace(path.parse(img).ext, '')}](./${imageDir
-          .split('\\')
-          .join('/')}/${img})`;
-      })
-      .join('\n');
-  } catch (err) {}
-}
-
-// TODO: Create a function to generate markdown for README
-// Needs :
-//  - formated Title
-//  - unformated Title
-//  - github UserName
-//  - list of badges user wants
-//  - license type
-//  - description
-//  - imagesDir
-//  - if they want contributions
-async function generateMarkdown(data) {
-  const {
-    formatedTitle,
-    title,
-    userName,
-    badges,
-    license,
-    description,
-    imagesDir,
-    contributions,
-  } = data;
-
+async function generateMarkdown({
+  formatedTitle,
+  title,
+  userName,
+  badges,
+  license,
+  description,
+  imagesDir,
+  configData,
+  contributions,
+}) {
   return `# ${formatedTitle}
 
 ${renderLicenseBadge(license, title, userName)}
@@ -99,7 +71,7 @@ ${description}
 ## Installation
 
 ## Usage
-${imagesDir === 'none' ? '' : await renderUsageSection(imagesDir)}
+${imagesDir === 'none' ? '' : await renderUsageSection(imagesDir, configData)}
 
 ${renderLicenseSection(license, title, userName)}
 ${

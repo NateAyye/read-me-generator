@@ -58,8 +58,14 @@ const flags = {
   contributions: {
     type: 'boolean',
     default: true,
-    aliad: 'r',
+    alias: 'r',
     desc: 'Add a Contributions section with a link to the Contributor Covenant Code of Conduct.',
+  },
+  badges: {
+    type: 'boolean',
+    default: false,
+    alias: 'b',
+    desc: 'Add the default badges without prompting for them.',
   },
 };
 

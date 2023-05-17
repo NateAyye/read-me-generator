@@ -33,6 +33,17 @@ const badgeChoices = {
     `![GitHub last commit](https://img.shields.io/github/last-commit/${userName}/${projectName})`,
 };
 
+const defaultBadges = {
+  Languages: (projectName, userName) =>
+    `![GitHub language count](https://img.shields.io/github/languages/count/${userName}/${projectName})`,
+  'Top Language': (projectName, userName) =>
+    `![GitHub top language](https://img.shields.io/github/languages/top/${userName}/${projectName})`,
+  'Github Forks': (projectName, userName) =>
+    `![GitHub forks](https://img.shields.io/github/forks/${userName}/${projectName}?style=social)`,
+  'Github Last Commit': (projectName, userName) =>
+    `![GitHub last commit](https://img.shields.io/github/last-commit/${userName}/${projectName})`,
+};
+
 const fuzzyExcludePaths = [
   'node_modules',
   '.git',
@@ -70,13 +81,14 @@ function grabPkgData() {
 
 function grabConfigData() {
   try {
-    const config = require(path.join(process.cwd(), 'rdmerc.json'));
+    const config = require(path.join(process.cwd(), 'rdmerc'));
     return config;
   } catch (err) {}
 }
 
 module.exports = {
   badgeChoices,
+  defaultBadges,
   licenseTypes,
   fuzzyExcludePaths,
   grabConfigData,

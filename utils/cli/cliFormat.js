@@ -32,23 +32,26 @@ function cliFormat(helpText, options) {
         ? val.split('=')[0].replaceAll('-', '')
         : val.replaceAll('-', '');
 
-      flags[
-        aliases.includes(flagName)
-          ? Object.keys(options.flags).filter(
-              (val) =>
-                options.flags[val] ===
-                Object.values(options.flags).filter(
-                  (val) => val.alias === flagName,
-                )[0],
-            )
-          : flagName
-      ] = val.includes('=')
-        ? val.split('=')[1]
-        : i === arr.length - 1
-        ? true
-        : arr[i + 1].includes('-')
-        ? true
-        : arr[i + 1];
+      const aliasFlagName = Object.keys(options.flags).filter(
+        (val) =>
+          options.flags[val] ===
+          Object.values(options.flags).filter(
+            (val) => val.alias === flagName,
+          )[0],
+      )[0];
+
+      const flagData = options.flags[aliasFlagName || flagName];
+
+      flags[aliases.includes(flagName) ? aliasFlagName : flagName] =
+        val.includes('=')
+          ? val.split('=')[1]
+          : i === arr.length - 1
+          ? flagData?.default !== undefined && flagData?.type === 'boolean'
+            ? !flagData?.default
+            : true
+          : arr[i + 1].includes('-')
+          ? true
+          : arr[i + 1];
     }
   });
 

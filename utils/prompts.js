@@ -62,6 +62,7 @@ async function genPrompts(flags) {
   const licenseGen = configData?.licenseGen || flags?.licenseGen;
   const areContributions = configData?.contributions || flags?.contributions;
   const authorName = configData?.author || pkgData?.author || flags?.author;
+  const badges = configData?.badges === true || flags?.badges;
 
   const prompts = [
     {
@@ -118,6 +119,7 @@ async function genPrompts(flags) {
         'Which Badges would you like to be included with you Readme?',
       ),
       choices: inquirerBadgeChoices(),
+      when: whenToPrompt.bind(null, badges),
     },
     {
       type: 'list',
@@ -155,6 +157,7 @@ async function genPrompts(flags) {
     prompts,
     pkgData,
     authorName,
+    badges,
     configData,
     projectName,
     description,
